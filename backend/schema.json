@@ -1,6 +1,7 @@
 {
     "image": "URL",
-    "limb_image": "URL",
+    "arm_image": "URL",
+    "leg_image": "URL",
     "health": {
         "max": 25
     },
