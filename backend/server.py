@@ -62,7 +62,7 @@ def create_scribble():
 
     # Process image.
     image_path = tempfile.mktemp(".jpg")
-    flask.request.files[0].save(image_path)
+    next(flask.request.files.values()).save(image_path)
     db.set(f"{user_id}:raw_mon", image_path)
     print("Temp image saved to", image_path)
     # Request to cropping server.
