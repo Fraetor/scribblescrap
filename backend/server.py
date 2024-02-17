@@ -56,7 +56,7 @@ def logout():
 
 @app.post("/api/create_scribble")
 def create_scribble():
-    if "user_id" not in flask.user_id:
+    if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
 
