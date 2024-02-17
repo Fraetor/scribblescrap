@@ -2,6 +2,7 @@
 
 """Scribble Scrap."""
 
+import json
 import os
 import tempfile
 import urllib.parse
@@ -66,41 +67,24 @@ def create_scribble():
     db.set(f"{user_id}:raw_mon", image_path)
     print("Temp image saved to", image_path)
     # Request to cropping server.
-    processing_id = requests.get(
-        IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
-    )
-    response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id.text}")
-    image = response.content
+    # TODO: Enable the actual server.
+    with open(image_path, "rb") as fp:
+        image = fp.read()
+    # processing_id = requests.get(
+    #     IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
+    # )
+    # response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id.text}")
+    # image = response.content
     scribble_id = str(uuid4())
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
     # Get scribble's stats
     # TODO: AI calls.
-    return scribble_id
 
-
-@app.get("/api/scribbles")
-def list_scribbles(user_id):
-    if "user_id" not in flask.session:
-        flask.abort(401)
-    user_id = flask.session["user_id"]
-    db.get(f"{user_id}:scribbles")
-
-
-@app.get("/api/scribble/<scribble_id>/image")
-def scribble_image(scribble_id):
-    if "user_id" not in flask.session:
-        flask.abort(401)
-    user_id = flask.session["user_id"]
-    image: bytes = db.get(f"{user_id}:{scribble_id}:image")
-    return image
-
-
-@app.get("/api/scribble/<scribble_id>/info")
-def scribble_info(scribble_id):
+    # TODO: This needs the AI returns put into it.
     scribble_info = {
-        "image": f"{flask.url_for(f'/api/scribble/{scribble_id}/image')}",
+        "image": flask.url_for(f"/api/scribble/{scribble_id}/image"),
         "arm_image": "/public/arm.png",
         "eye_image": "/public/eye.png",
         "leg_image": "/public/leg.png",
@@ -117,6 +101,33 @@ def scribble_info(scribble_id):
             {"name": "brick", "colour": "#ff0c00"},
         ],
     }
+    db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
+    return scribble_info
+
+
+@app.get("/api/scribbles")
+def list_scribbles(user_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    db.get(f"{user_id}:scribbles")
+
+
+@app.get("/api/scribble/<scribble_id>/image")
+def scribble_image(scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    image = db.get(f"{user_id}:{scribble_id}:image")
+    return image
+
+
+@app.get("/api/scribble/<scribble_id>/info")
+def scribble_info(scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    scribble_info = json.loads(db.get(f"{user_id}:{scribble_id}:info"))
     return scribble_info
 
 
