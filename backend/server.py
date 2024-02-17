@@ -8,7 +8,7 @@ import sqlite3
 import stuff
 
 db = sqlite3.connect("db.sqlite3")
-db.execute("CREATE TABLE IF NOT EXISTS users(user_id INT, name TEXT)")
+db.execute("CREATE TABLE IF NOT EXISTS users(user_id INT, username TEXT)")
 db.execute(
     "CREATE TABLE IF NOT EXISTS scribbles(user_id INT, name TEXT, image BLOB, attack INT, defence INT, speed INT, health INT, type TEXT, type2 TEXT)"
 )
