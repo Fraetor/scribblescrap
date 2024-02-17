@@ -97,5 +97,28 @@ def scribble_image(scribble_id):
     return image
 
 
+@app.get("/api/scribble/<scribble_id>/info")
+def scribble_info(scribble_id):
+    scribble_info = {
+        "image": f"{flask.url_for(f'/api/scribble/{scribble_id}/image')}",
+        "arm_image": "/public/arm.png",
+        "eye_image": "/public/eye.png",
+        "leg_image": "/public/leg.png",
+        "health": {"max": 25},
+        "limbs": [
+            {"direction": "2", "arm_anchor": [10, 15], "body_anchor": [25, 20]},
+            {"direction": "4.3", "arm_anchor": [10, 15], "body_anchor": [25, 20]},
+        ],
+        "name": "Testimon",
+        "description": "A test scraplet.",
+        "stats": {"might": 1, "speed": 1, "health": 1, "defence": 1},
+        "types": [
+            {"name": "grass", "colour": "#00ff00"},
+            {"name": "brick", "colour": "#ff0c00"},
+        ],
+    }
+    return scribble_info
+
+
 if __name__ == "__main__":
     app.run(debug=True)
