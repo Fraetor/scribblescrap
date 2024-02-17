@@ -2,8 +2,10 @@
 
 """Scribble Scrap."""
 
+import os
 import tempfile
 import urllib.parse
+from uuid import uuid4
 
 import flask
 import redis
@@ -15,7 +17,7 @@ import requests
 IMAGE_CROPPER_URL = "http://localhost:7001"
 
 
-r = redis.Redis()
+db = redis.Redis()
 
 app = flask.Flask(__name__)
 app.secret_key = b"*s\xd3\xea%\xc7\x99\x8e\xb1\x13V\rpG\xf3\x8c\xf6\xcb'J7f\xc3\xe1\xb7\r\xe2\xbe8\x1cH\xe8"
@@ -31,11 +33,11 @@ def index():
 @app.post("/api/login")
 def login():
     username = flask.request.json["username"]
-    user_id = r.get(f"user_id:{username}")
+    user_id = db.get(f"user_id:{username}")
     if user_id is None:
         print("Creating account for", username)
-        user_id = username
-        r.set(f"user_id:{username}", username)
+        user_id = str(uuid4())
+        db.set(f"user_id:{username}", user_id)
     print(username, "logged in.")
     flask.session["user_id"] = user_id
     resp = flask.make_response()
@@ -48,24 +50,50 @@ def logout():
     # Remove the username from the session if it's there
     resp = flask.make_response(flask.redirect(flask.url_for("index")))
     resp.set_cookie("username", expires=0)
-    flask.session.pop("username", None)
+    flask.session.pop("user_id", None)
     return resp
 
 
 @app.post("/api/create_scribble")
 def create_scribble():
-    if "username" not in flask.session:
+    if "user_id" not in flask.user_id:
         flask.abort(401)
-    username = flask.session["username"]
-    user_id = r.get(f"user_id:{username}")
+    user_id = flask.session["user_id"]
 
+    # Process image.
     image_path = tempfile.mktemp(".jpg")
     flask.request.files[0].save(image_path)
-    r.set(f"{user_id}:raw_mon", image_path)
+    db.set(f"{user_id}:raw_mon", image_path)
     # Request to cropping server.
-    requests.get(IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}")
+    processing_id = requests.get(
+        IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
+    )
+    response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id.text}")
+    image = response.content
+    scribble_id = str(uuid4())
+    db.set(f"{user_id}:{scribble_id}:image", image)
+    os.unlink(image_path)
 
-    return "OK"
+    # Get scribble's stats
+    # TODO: AI calls.
+    return scribble_id
+
+
+@app.get("/api/scribbles")
+def list_scribbles(user_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    db.get(f"{user_id}:scribbles")
+
+
+@app.get("/api/scribble/<scribble_id>/image")
+def scribble_image(scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    image: bytes = db.get(f"{user_id}:{scribble_id}:image")
+    return image
 
 
 if __name__ == "__main__":

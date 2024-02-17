@@ -290,3 +290,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 *.sqlite3
+*.rdb

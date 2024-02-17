@@ -1,0 +1,47 @@
+{
+    "image": "URL",
+    "limb_image": "URL",
+    "health": {
+        "max": 25
+    },
+    "limbs": [
+        {
+            "direction": "2",
+            "arm_anchor": [
+                10,
+                15
+            ],
+            "body_anchor": [
+                25,
+                20
+            ]
+        },
+        {
+            "direction": "4.3",
+            "arm_anchor": [
+                10,
+                15
+            ],
+            "body_anchor": [
+                25,
+                20
+            ]
+        }
+    ],
+    "stats": {
+        "might": 1,
+        "speed": 1,
+        "health": 1,
+        "defence": 1
+    },
+    "types": [
+        {
+            "name": "grass",
+            "colour": "#00ff00"
+        },
+        {
+            "name": "brick",
+            "colour": "#ff0c00"
+        }
+    ]
+}
