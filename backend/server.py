@@ -42,7 +42,7 @@ def login():
     print(username, "logged in.")
     flask.session["user_id"] = user_id
     resp = flask.make_response()
-    resp.set_cookie("username", flask.request.json["username"])
+    resp.set_cookie("username", flask.request.json["username"], path="/")
     return resp
 
 
