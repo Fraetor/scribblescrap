@@ -1,11 +1,31 @@
 import Image from "next/image";
 import HeathBar from "./healthBar";
 import Canvas from "./Canvas";
+import { useState, useEffect } from "react";
 
 
-export default function ViewScrap({ scrap }) {
+export default function ViewScrap({ scrapID }) {
+    const [scrapObject, setScrapObject] = useState(null)
 
-    const scrapObject = scrap;
+    useEffect(() => {
+        fetch(`/api/scribble/`+scrapID+"/info", {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then(data => {setScrapObject(data)})
+            .catch(error => {
+                // Handle error
+                console.error('Error:', error);
+            });
+    }, []);
+
+
+
+    if (scrapObject === null) {
+        return (
+            <div className="text-black">LOADING</div>
+        )
+    }
 
     let arms = []
     for (var arm of scrapObject.arms) {
@@ -56,27 +76,27 @@ export default function ViewScrap({ scrap }) {
 
     return (
         <div className="w-full">
-            <div className="text-yellow-500 text-center text-4xl mb-1">You've found a {scrapObject.name}!</div>
+            <div className="text-yellow-500 text-center text-4xl mb-2">You've found a {scrapObject.name}!</div>
             <div className="grid grid-cols-4 gap-2" >
-            <div className="grid grid-cols-2 text-md bg-red-800 p-2 rounded-full">
-                <div className="text-right">might:</div>
-                <div className="text-center">{scrapObject.stats.might}</div>
+            <div className="text-md bg-red-800 p-2 rounded-full">
+                <div className="text-center text-lg">Might</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats.might}</div>
             </div>
-            <div className="grid grid-cols-2 text-md bg-yellow-500 p-2 rounded-full">
-                <div className="text-right">speed:</div>
-                <div className="text-center">{scrapObject.stats.speed}</div>
+            <div className="text-md bg-yellow-500 p-2 rounded-full">
+                <div className="text-center text-lg">Speed</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats.speed}</div>
             </div>
-            <div className="grid grid-cols-2 text-md bg-pink-600 p-2 rounded-full">
-                <div className="text-right">health:</div>
-                <div className="text-center">{scrapObject.stats.health}</div>
+            <div className="text-md bg-pink-600 p-2 rounded-full">
+                <div className="text-center text-lg">Health</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats.health}</div>
             </div>
-            <div className="grid grid-cols-2 text-md bg-blue-500 p-2 rounded-full">
-                <div className="text-right">defence:</div>
-                <div className="text-center">{scrapObject.stats.defence}</div>
+            <div className="text-md bg-blue-500 p-2 rounded-full">
+                <div className="text-center text-lg">Defence</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats.defence}</div>
             </div>
             </div>
 
-            {(scrap.types.length === 1) && (
+            {(scrapObject.types.length === 1) && (
                 <div className="flex">
                 <span className="text-xl text-black px-2">Class:</span>
                 <div
@@ -87,7 +107,7 @@ export default function ViewScrap({ scrap }) {
                 </div>
                 </div>
             )}
-            {(scrap.types.length === 2) && (
+            {(scrapObject.types.length === 2) && (
                 <div className="flex">
                 <span className="text-xl text-black px-2">Classes:</span>
                 <div className="flex text-center gap-1 pt-1">
