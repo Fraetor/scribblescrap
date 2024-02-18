@@ -11,20 +11,58 @@ from uuid import uuid4
 import flask
 import redis
 import requests
-import sys
 
 # Constants:
-
 IMAGE_CROPPER_URL = "http://localhost:7001"
 
 
 db = redis.Redis()
-
 app = flask.Flask(__name__)
 app.secret_key = b"*s\xd3\xea%\xc7\x99\x8e\xb1\x13V\rpG\xf3\x8c\xf6\xcb'J7f\xc3\xe1\xb7\r\xe2\xbe8\x1cH\xe8"
 
 
-@app.get("/")
+def make_qr_code(text: str) -> bytes:
+    response = requests.get(
+        f"https://qrcode.show/{urllib.parse.quote(text)}",
+        headers={"Accept": "image/png"},
+    )
+    if not response.ok:
+        raise OSError("QR generation failed.")
+    return response.content
+
+
+@app.post("/api/new_battle")
+def create_new_battle():
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    battle_id = str(uuid4())
+    db.set(f"{battle_id}:qr", make_qr_code(battle_id))
+    return battle_id
+
+
+@app.get("/api/<battle_id>/qr")
+def battle_qr(battle_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    qr_png = db.get(f"{battle_id}:qr")
+    return qr_png
+
+
+@app.route("/api/<battle_id>/join/<scribble_id>")
+def join_battle(battle_id, scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    db.lpush(f"{battle_id}:users", user_id)
+    db.set(f"{battle_id}:{user_id}:scribble", scribble_id)
+
+
+@app.get("/api/<battle_id>/status")
+def battle_status(battle_id):
+    pass
+
+
+@app.get("/api")
 def index():
     if "username" in flask.session:
         return f'Logged in as {flask.session["username"]}'
