@@ -194,6 +194,7 @@ def scribble_limbs(scribble_id):
 
 
 def get_limbs(scribble_id):
+
     raw_limbs = db.get(f"{scribble_id}:limbs")
     if raw_limbs is None:
         processing_id = db.get(f"{scribble_id}:processing_id").decode("utf-8")
