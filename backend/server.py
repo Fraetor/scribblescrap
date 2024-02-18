@@ -2,6 +2,7 @@
 
 """Scribble Scrap."""
 
+import json
 import os
 import tempfile
 import urllib.parse
@@ -10,7 +11,6 @@ from uuid import uuid4
 import flask
 import redis
 import requests
-
 
 # Constants:
 
@@ -41,7 +41,7 @@ def login():
     print(username, "logged in.")
     flask.session["user_id"] = user_id
     resp = flask.make_response()
-    resp.set_cookie("username", flask.request.json["username"])
+    resp.set_cookie("username", flask.request.json["username"], path="/")
     return resp
 
 
@@ -68,15 +68,21 @@ def create_scribble():
     # Request to cropping server.
     processing_id = requests.get(
         IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
-    )
-    response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id.text}")
+    ).text
+    response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
     scribble_id = str(uuid4())
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
     # Get scribble's stats
-    # TODO: AI calls.
+    response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+    scribble_info = response.json()
+    scribble_info["image"] = flask.url_for(f"/api/scribble/{scribble_id}/image")
+    scribble_info["arm_image"] = "/public/arm.png"
+    scribble_info["eye_image"] = "/public/eye.png"
+    scribble_info["leg_image"] = "/public/leg.png"
+    db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
     return scribble_id
 
 
@@ -93,8 +99,17 @@ def scribble_image(scribble_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    image: bytes = db.get(f"{user_id}:{scribble_id}:image")
+    image = db.get(f"{user_id}:{scribble_id}:image")
     return image
+
+
+@app.get("/api/scribble/<scribble_id>/info")
+def scribble_info(scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    scribble_info = json.loads(db.get(f"{user_id}:{scribble_id}:info"))
+    return scribble_info
 
 
 if __name__ == "__main__":
