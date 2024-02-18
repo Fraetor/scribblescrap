@@ -20,7 +20,7 @@ export default function ViewScrap({ scrap }) {
 
     let legs = []
     for (var leg of scrapObject.legs) {
-        leg.push({
+        legs.push({
             "rx": leg.limb_anchor[0],
             "ry": leg.limb_anchor[1],
             "ox": leg.body_anchor[0],
