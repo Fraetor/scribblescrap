@@ -38,33 +38,16 @@ def segment_path():
 
     return id, 200
 
-@app.route("/get/<uuid:id>")
-@app.route("/get/<uuid:id>.png")
-def get_uuid(id):
-    return send_file(
-        os.path.join(output_dir, str(id) + ".png"),
-        download_name="output.png"
-    )
+@app.route("/limbs/<uuid:id>")
+@app.route("/limbs/<uuid:id>.png")
+def get_limbs(id):
+    return _get_limbs(id)
 
-@app.route("/calculate-stats/<uuid:id>")
-@app.route("/calculate-stats/<uuid:id>.png")
-def calculate_stats(id):
-    data = do_ai_stuff(os.path.join(output_dir, str(id) + ".png"))
-
-    types = [{"name": data["top"].lower(), "colour": "darkgrey"}]
-    if "next" in data and data["next"] != None:
-        types.append({"name": data["next"].lower(), "colour": "lightgrey"})
-
-    stats = choose_stats(data["stat_ranking"])
-
+def _get_limbs(id):
     img = Image.open(os.path.join(output_dir, str(id) + ".png"))
     surrounds = [ raycast_inwards(img, math.pi * 2.0 * i / 16.0) for i in range(16) ]
 
     return {
-        "name": data["object"].title(),
-        "nickname": data["nickname"].title(),
-        "description": data["description"],
-        "types": types,
         "arms": [
             {
                 "direction": -0.1,
@@ -88,12 +71,41 @@ def calculate_stats(id):
                 "limb_anchor": [10, 30],
                 "body_anchor": list(surrounds[13]),
             },
-        ],
+        ]
+    }
+
+@app.route("/get/<uuid:id>")
+@app.route("/get/<uuid:id>.png")
+def get_uuid(id):
+    return send_file(
+        os.path.join(output_dir, str(id) + ".png"),
+        download_name="output.png"
+    )
+
+@app.route("/calculate-stats/<uuid:id>")
+@app.route("/calculate-stats/<uuid:id>.png")
+def calculate_stats(id):
+    data = do_ai_stuff(os.path.join(output_dir, str(id) + ".png"))
+
+    types = [{"name": data["top"].lower(), "colour": "darkgrey"}]
+    if "next" in data and data["next"] != None:
+        types.append({"name": data["next"].lower(), "colour": "lightgrey"})
+
+    stats = choose_stats(data["stat_ranking"])
+
+    limbs = _get_limbs(id)
+
+    return {
+        "name": data["object"].title(),
+        "nickname": data["nickname"].title(),
+        "description": data["description"],
+        "types": types,
+        "arms": limbs["arms"],
+        "legs": limbs["legs"],
         "arm_image": "arm.png",
         "leg_image": "leg.png",
         "health": {
             "max": stats["health"] * 4,
         },
-        "stats": stats,
-        "surrounds": surrounds
+        "stats": stats
     }
