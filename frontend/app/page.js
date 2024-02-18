@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Camera from "./components/Camera";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import BattleScrap from "./components/BattleScraps";
 import ViewScrap from "./components/ViewScrap";
 
 
 export default function Home() {
+  const [scrap, setScrap] = useState(null)
   const inputFile = useRef(null)
   const testScrap = {
     image: "/border_orange.png",
@@ -55,11 +56,15 @@ export default function Home() {
             scrap={testRScrap}
           />
         </div> */}
-
-      <ViewScrap scrap={testScrap}/>
+      {(scrap !== null) && (
+        <div>
+          <ViewScrap scrap={scrap}></ViewScrap>
+        </div>
+      )}
+      
       
       </div>
-      <Camera />
+      <Camera setScrap={setScrap}/>
       
     </main>
   );
