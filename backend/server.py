@@ -78,7 +78,6 @@ def create_scribble():
     # Get scribble's stats
     print("Getting:", IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
-    print(response.text)
     scribble_info = response.json()
     scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
@@ -102,6 +101,8 @@ def scribble_image(scribble_id):
         flask.abort(401)
     user_id = flask.session["user_id"]
     image = db.get(f"{user_id}:{scribble_id}:image")
+    resp = flask.make_response(image)
+    resp.headers["Content-Type"] = "image/png"
     return image
 
 
