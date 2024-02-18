@@ -107,5 +107,9 @@ def calculate_stats(id):
             "max": stats["health"] * 4,
             "current": stats["health"] * 4,
         },
-        "stats": stats
+        "stats": stats,
+        "attack_1": data["attack_1"],
+        "attack_1_name": data["attack_1_name"],
+        "attack_2": data["attack_2"],
+        "attack_2_name": data["attack_2_name"],
     }

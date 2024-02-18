@@ -31,6 +31,8 @@ should only be used if we're very sure about it, so maybe if the number
 for that category is at least, say, 75. The top category should be close
 to 90 or 100 in most cases, but don't force it.
 
+Using the object and detailed description you made for yourself earlier, your next task is to select two attacks from the following list that best suit it. Your challenge doesn't end there; you must also concoct fitting and inventive names for each chosen attack. For instance, the creature was a "Bird," you might opt for the attack "Evasive Strike" and aptly dub it "Aero Dance." The attack types will be listed below after the categories and descriptions.
+
 Finally, there are four "stat" categories: "might", "speed", "health",
 and "defence". We roll for the actual values separately, but I want
 you to order the stats from highest to lowest. For example, a tank
@@ -119,9 +121,35 @@ Categories and descriptions:
     trash: Objects deemed useless or discarded items.
         Examples: A broken appliance, a crumpled paper.
 
-Respond with a JSON object structured as follows:
+End of categories
 
-json
+Attacks and descriptions:
+
+Charge: Skip a turn to unleash a devastating attack next turn.
+Chip: Landing a hit reduces the enemy's defense.
+Leech: Gain health equivalent to a portion of the damage dealt.
+Serenity: Heal slightly and remove any negative status effects.
+Softening Strike: Decrease the enemy's attack strength.
+Barrage: A swift, precise, and low-damage assault.
+Detonation: An explosive strike dealing massive damage to both sides.
+Evasive Strike: Boosts your evasion, reducing the chance of being hit.
+Sticky Strike: Slows down the enemy with a sticky substance.
+Drain Attack: Reduces the enemy's attack power.
+Quick Attack: A standard attack, but delivered with increased speed.
+Magic Missile: A guaranteed hit with minimal damage, infused with magic.
+Ghost Dart: Pierces through armor defenses.
+Dispelling Strike: Nullifies all buffs on the enemy.
+Paralyzing Strike: May cause the enemy to miss their next turn.
+Fortified Strike: Doubles your defense for one turn.
+Heavy Attack: A slow yet powerful strike dealing substantial damage.
+Full Heal: Instantly restores your health to maximum, usable once.
+Inaccurate Devastator: Unlikely to hit but inflicts massive damage.
+Grazing Attack: Deals minor damage even if it misses.
+Bleed Attack: Inflicts a bleeding debuff, causing damage over time.
+
+End of attacks
+
+Respond with a JSON object structured as follows:
 
 {
     "object": "Coffee Cup",
@@ -130,7 +158,13 @@ json
     "top": "titan",
     "next": null | "plastic" etc,
     "stat_ranking": [ "health", "speed", "might", "defence" ]
+   "attack_1": "Detonation",
+   "attack_1_name": "Steam Explosion",
+   "attack_2": "Full heal",
+   "attack_2_name": "Morning coffee"
 }
+
+Replace the strings with your choices.
 
 Just generate the JSON, don't output anything else, and don't put it
 in backtick code fences. Don't use any comments. Just output JSON.
