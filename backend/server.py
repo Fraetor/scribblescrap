@@ -116,23 +116,26 @@ def scribble_image(scribble_id):
 def scribble_limbs(scribble_id):
     return get_limbs(scribble_id)
 
+
 def get_limbs(scribble_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    existing = db.get(f"{user_id}:{scribble_id}:limbs")
-    if existing == None:
+    raw_limbs = db.get(f"{user_id}:{scribble_id}:limbs")
+    if raw_limbs is None:
         processing_id = db.get(f"{user_id}:{scribble_id}:processing_id").decode("utf-8")
+        print("Getting:", IMAGE_CROPPER_URL + f"/limbs/{processing_id}")
         response = requests.get(IMAGE_CROPPER_URL + f"/limbs/{processing_id}")
         if not response.ok:
-            print(response, sys.stderr)
+            print(response.text)
             flask.abort(502)
         limbs = response.json()
         print("new limbs=", limbs)
         db.set(f"{user_id}:{scribble_id}:limbs", json.dumps(limbs))
     else:
-        limbs = existing
+        limbs = json.loads(raw_limbs)
     return limbs
+
 
 @app.post("/api/scribble/<scribble_id>/generate")
 def scribble_generate(scribble_id):
@@ -144,11 +147,7 @@ def scribble_generate(scribble_id):
     if raw_scribble_info is None:
         # Generate scribble info.
         processing_id = db.get(f"{user_id}:{scribble_id}:processing_id").decode("utf-8")
-        print(
-            "Getting:",
-            IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}",
-            file=sys.stderr,
-        )
+        print("Getting:", IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
         response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
         if not response.ok:
             print(response.text)
@@ -160,9 +159,9 @@ def scribble_generate(scribble_id):
         scribble_info["leg_image"] = "/public/leg.png"
         db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
     else:
-        return raw_scribble_info
-
+        scribble_info = json.load(raw_scribble_info)
     return scribble_info
+
 
 @app.get("/api/scribble/<scribble_id>/info")
 def scribble_info(scribble_id):
@@ -172,19 +171,18 @@ def scribble_info(scribble_id):
     raw_scribble_info = db.get(f"{user_id}:{scribble_id}:info")
     if raw_scribble_info is None:
         limbs = get_limbs(scribble_id)
-
         print(limbs)
-
-        return {
+        scibble_info = {
             "image": f"/api/scribble/{scribble_id}/image",
             "arm_image": "/public/arm.png",
             "eye_image": "/public/eye.png",
             "leg_image": "/public/leg.png",
             "arms": limbs["arms"],
-            "legs": limbs["legs"]
+            "legs": limbs["legs"],
         }
     else:
-        return json.loads(raw_scribble_info)
+        scibble_info = json.loads(raw_scribble_info)
+    return scibble_info
 
 
 if __name__ == "__main__":
