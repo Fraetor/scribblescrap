@@ -2,6 +2,7 @@ import Image from "next/image";
 import HeathBar from "./healthBar";
 import Canvas from "./Canvas";
 import { useState, useEffect } from "react";
+import ShareButton from "./ShareButton";
 
 
 export default function ViewScrap({ scrapID }) {
@@ -132,6 +133,7 @@ export default function ViewScrap({ scrapID }) {
                 </div>
                 </div>
             )}
+            <ShareButton url="google.com" text={"Look at my scrap "+scrapObject.nickname} title={"Look at my scrap "+scrapObject.nickname}/>
             <div className="relative aspect-square">
                 <div className="absolute translate-y-[70%]">
                     <div className="w-full overflow-hidden brightness-125 aspect-square">
