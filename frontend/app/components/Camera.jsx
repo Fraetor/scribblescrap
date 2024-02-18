@@ -22,7 +22,7 @@ export default function Camera(setJson) {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text)
+                .then(response => response.text())
                 .then(data => {
                     fetch(`/api/scribble/`+data+"/info", {
                         method: 'GET',
