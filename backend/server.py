@@ -41,7 +41,7 @@ def login():
         db.set(f"user_id:{username}", user_id)
     print(username, "logged in.")
     flask.session["user_id"] = user_id
-    resp = flask.make_response()
+    resp = flask.make_response(flask.redirect(flask.url_for("index")))
     resp.set_cookie("username", flask.request.json["username"], path="/")
     return resp
 
