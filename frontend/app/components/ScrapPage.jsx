@@ -23,7 +23,7 @@ export default function ScrapPage({ children }) {
 
     return (
         <div>
-            {[...scraps].reverse().map(scrap => {
+            {scraps.map(scrap => {
                 return (
                     <div className="border-b-4 border-blue-800 pb-4">
                         <ViewScrap scrapID={scrap}/>
