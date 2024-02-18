@@ -64,7 +64,7 @@ export default function Home() {
       
       
       </div>
-      <Camera setScrap={setScrap}/>
+      <Camera setJson={setScrap}/>
       
     </main>
   );

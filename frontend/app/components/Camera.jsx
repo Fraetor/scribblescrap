@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-export default function Camera(setJson) {
+export default function Camera({ setJson }) {
     const [image, setImage] = useState(null);
     const inputFile = useRef(null);
 
@@ -29,6 +29,7 @@ export default function Camera(setJson) {
                     })
                     .then(response => response.json())
                     .then(data => setJson(data))
+                    .catch()
                 })
                 .catch(error => {
                     // Handle error
