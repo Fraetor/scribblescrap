@@ -42,8 +42,6 @@ def create_new_battle():
 
 @app.get("/api/<battle_id>/qr")
 def battle_qr(battle_id):
-    if "user_id" not in flask.session:
-        flask.abort(401)
     qr_png = db.get(f"{battle_id}:qr")
     return qr_png
 
@@ -196,15 +194,11 @@ def scribble_generate(scribble_id):
         if not response.ok:
             print(response.text)
             flask.abort(502)
-        limbs = get_limbs(scribble_id)
-
         scribble_info = response.json()
         scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
         scribble_info["arm_image"] = "/public/arm.png"
         scribble_info["eye_image"] = "/public/eye.png"
         scribble_info["leg_image"] = "/public/leg.png"
-        scribble_info["arms"] = limbs["arms"]
-        scribble_info["legs"] = limbs["legs"]
         db.set(f"{scribble_id}:info", json.dumps(scribble_info))
     else:
         scribble_info = json.load(raw_scribble_info)
@@ -215,9 +209,19 @@ def scribble_generate(scribble_id):
 def scribble_info(scribble_id):
     raw_scribble_info = db.get(f"{scribble_id}:info")
     if raw_scribble_info is None:
-        flask.abort(404)
-    scribble_info = json.loads(raw_scribble_info)
-    return scribble_info
+        limbs = get_limbs(scribble_id)
+        print(limbs)
+        scibble_info = {
+            "image": f"/api/scribble/{scribble_id}/image",
+            "arm_image": "/public/arm.png",
+            "eye_image": "/public/eye.png",
+            "leg_image": "/public/leg.png",
+            "arms": limbs["arms"],
+            "legs": limbs["legs"],
+        }
+    else:
+        scibble_info = json.loads(raw_scribble_info)
+    return scibble_info
 
 
 if __name__ == "__main__":

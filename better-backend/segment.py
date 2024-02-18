@@ -68,7 +68,7 @@ def _get_limbs(id):
             {
                 "direction": 1.671,
                 "limb_anchor": [10, 30],
-                "body_anchor": list(surrounds[13]),
+                "body_anchor": list(surrounds[14]),
             },
         ]
     }
