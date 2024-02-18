@@ -105,6 +105,7 @@ def calculate_stats(id):
         "leg_image": "leg.png",
         "health": {
             "max": stats["health"] * 4,
+            "current": stats["health"] * 4,
         },
         "stats": stats
     }

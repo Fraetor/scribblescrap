@@ -107,7 +107,7 @@ export default function ViewScrap({ scrapID }) {
                 <div className="flex">
                 <span className="text-xl text-black px-2">Class:</span>
                 <div
-                    className="mt-1 text-center rounded-full px-2 text-black w-16 border-black border"
+                    className="mt-1 text-center rounded-full px-2 text-black border-black border"
                     style={{ backgroundColor: scrapObject.types[0].colour }}
                 >
                     {scrapObject.types[0].name}
@@ -119,13 +119,13 @@ export default function ViewScrap({ scrapID }) {
                 <span className="text-xl text-black px-2">Classes:</span>
                 <div className="flex text-center gap-1 pt-1">
                     <div
-                        className="rounded-full px-2 text-black w-16 border-black border"
+                        className="rounded-full px-2 text-black border-black border"
                         style={{ backgroundColor: scrapObject.types[0].colour }}
                     >
                         {scrapObject.types[0].name}
                     </div>
                     <div
-                        className="rounded-full px-2 text-black w-16 border-black border"
+                        className="rounded-full px-2 text-black border-black border"
                         style={{ backgroundColor: scrapObject.types[1].colour }}
                     >
                         {scrapObject.types[1].name}
