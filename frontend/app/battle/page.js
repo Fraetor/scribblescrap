@@ -73,12 +73,12 @@ export default function BattlePage() {
         return (
             <div className="min-h-screen flex flex-col p-4">
                 <div className="flex flex-row gap-2">
-                    <div className="w-3/5">
+                    <div className="w-1/2">
                         <BattleScrap
                             scrapID={battle.player1.scribble_id}
                         />
                     </div>
-                    <div className="w-2/5">
+                    <div className="w-1/2">
                         <BattleScrap
                             scrapID={battle.player2.scribble_id}
                         />
