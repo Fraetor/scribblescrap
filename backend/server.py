@@ -4,7 +4,6 @@
 
 import json
 import os
-import sys
 import tempfile
 import urllib.parse
 from uuid import uuid4
@@ -72,12 +71,12 @@ def create_scribble():
         IMAGE_CROPPER_URL + f"/segment?path={urllib.parse.quote_plus(image_path)}"
     )
     if not response.ok:
-        print(response, sys.stderr)
+        print(response.text)
         flask.abort(502)
     processing_id = response.text
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     if not response.ok:
-        print(response, sys.stderr)
+        print(response.text)
         flask.abort(502)
     image = response.content
     db.rpush(f"{user_id}:scribbles", scribble_id)
@@ -151,7 +150,7 @@ def scribble_generate(scribble_id):
         )
         response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
         if not response.ok:
-            print(response, sys.stderr)
+            print(response.text)
             flask.abort(502)
         scribble_info = response.json()
         scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
