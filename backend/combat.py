@@ -3,9 +3,7 @@
 import random
 import math
 
-Damage = Hitrate = Moveblock = Dodge = DamageReduction = Resistance = Health = (
-    Maxhealth
-) = {
+Damage = Hitrate = Moveblock = Dodge = DamageReduction = Resistance = Health = MaxHealth = {
     "Value": 55,
     "EffectiveValue": 55,
     "PositiveMultiplier": 1,
@@ -49,7 +47,7 @@ moves = {"Charge": usage["Few"],
 "Inaccurate Devastator": usage["Normal"],
 "Grazing Attack": usage["Normal"],
 "Bleed attack": usage["Normal"],
-"Switch": usage["All"],}
+"Switch": usage["All"]}
 
 scrapling_state = {
 "Damage":Damage,
@@ -72,7 +70,7 @@ p1_state = {"Scraplings": {}, "id": "werwerwer", "Turn": True}
 for a in scrapling_ids:
     p1_state["Scraplings"][a] = scrapling_state
 
-p1_state = p2_state
+p2_state = p1_state
 
 turnblock = 0
 
@@ -83,6 +81,8 @@ type_state = {
     "DamageToOpponentModifier" : 1,
     "DamageToSelfModifier" : 1
 }
+
+turn_block = 0
 
 state = [p1_state, p2_state, turn_block, active_scraplings, type_state]
 
@@ -273,7 +273,7 @@ def update_action(state:list, current_action:dict):
         state[1-player_turn]["Scraplings"][active_scraplings[player_turn]]["MaxHealth"]["NegativeMultiplier"]=1
     elif current_action["Type"] == "Paralysing Strike":
         action_result = attack(state[player_turn]["Scraplings"][active_scraplings[player_turn]], state[1-player_turn]["Scraplings"][active_scraplings[1-player_turn]], speed["Normal"], accuracy["Normal"], damage["Normal"], armour_piercing["None"],1, state[4][1])
-        if (action_result[0]>0) and random.randint(1,250) < state[1-player_turn]["Scraplings"][active_scraplings[1-player_turn]]["Resistance"]["EffectiveValue"]-=5:
+        if (action_result[0]>0) and random.randint(1,250) < state[1-player_turn]["Scraplings"][active_scraplings[1-player_turn]]["Resistance"]["EffectiveValue"]:
             action_result[2] = 0
 
     elif current_action["Type"] == "Fortified Strike":
