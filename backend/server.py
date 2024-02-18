@@ -23,7 +23,7 @@ app.secret_key = b"*s\xd3\xea%\xc7\x99\x8e\xb1\x13V\rpG\xf3\x8c\xf6\xcb'J7f\xc3\
 
 def make_qr_code(text: str) -> bytes:
     response = requests.get(
-        f"https://qrcode.show/{urllib.parse.quote(text)}",
+        f"https://qrcode.show/{text}",
         headers={"Accept": "image/png"},
     )
     if not response.ok:
@@ -36,7 +36,9 @@ def create_new_battle():
     if "user_id" not in flask.session:
         flask.abort(401)
     battle_id = str(uuid4())
-    db.set(f"{battle_id}:qr", make_qr_code(battle_id))
+    db.set(
+        f"{battle_id}:qr",
+        make_qr_code(f"https://scribble-scraps.frost.cx/api/{battle_id}/join"))
     return battle_id
 
 
@@ -51,24 +53,64 @@ def join_battle(battle_id, scribble_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
+    if isinstance(user_id, bytes):
+        user_id = user_id.decode("utf-8")
+
     db.lpush(f"{battle_id}:users", user_id)
     db.set(f"{battle_id}:{user_id}:scribble", scribble_id)
     return user_id
 
+@app.route("/api/<battle_id>/join")
+def join_battle_no_scribble(battle_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+
+    user_id = flask.session["user_id"]
+    if isinstance(user_id, bytes):
+        user_id = user_id.decode("utf-8")
+
+    db.lpush(f"{battle_id}:users", user_id)
+
+    scribble_ids = [
+        id.decode("UTF-8") for id in db.lrange(f"{user_id}:scribbles", 0, -1)
+    ]
+
+    if len(scribble_ids) == 0:
+        return flask.redirect("/")
+
+    db.set(f"{battle_id}:{user_id}:scribble", scribble_ids[0])
+
+    return flask.redirect("/battle?id=" + battle_id)
+
 @app.get("/api/<battle_id>/status")
 def battle_status(battle_id):
     players = db.lrange(f"{battle_id}:users", 0, -1)
+
+    print("players=", players)
+
+    if len(players) == 0:
+        return {
+            "battle_id": battle_id,
+            "player1": None,
+            "player2": None
+        }
+
+    print("more than 0")
+
     user_id_1 = players[0].decode("UTF-8")
     if len(players) == 2:
+        print("2 players")
         user_id_2 = players[1].decode("UTF-8")
         user_2 = {
             "user_id": user_id_2,
-            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble"),
+            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble").decode("utf-8"),
         }
     else:
         user_2 = None
 
-    print("ids:", user_id_1, user_id_2)
+    print("user_id_1=", user_id_1, "; user_2=", user_2)
+    print("battle_id=", battle_id)
+    print("key=", f"{battle_id}:{user_id_1}:scribble")
 
     battle_status = {
         "battle_id": battle_id,
@@ -78,6 +120,9 @@ def battle_status(battle_id):
         },
         "player2": user_2,
     }
+
+    print("returning battle_status=", battle_status)
+
     return battle_status
 
 
@@ -171,6 +216,7 @@ def scribble_limbs(scribble_id):
 
 
 def get_limbs(scribble_id):
+
     raw_limbs = db.get(f"{scribble_id}:limbs")
     if raw_limbs is None:
         processing_id = db.get(f"{scribble_id}:processing_id").decode("utf-8")
