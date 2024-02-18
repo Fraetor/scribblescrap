@@ -133,7 +133,7 @@ export default function ViewScrap({ scrapID }) {
                 </div>
                 </div>
             )}
-            <ShareButton url="google.com" text={"Look at my scrap "+scrapObject.nickname} title={"Look at my scrap "+scrapObject.nickname}/>
+            <ShareButton url={"scribble?id="+scrapID} text={"Look at my scrap "+scrapObject.nickname} title={"Look at my scrap "+scrapObject.nickname}/>
             <div className="relative aspect-square">
                 <div className="absolute translate-y-[70%]">
                     <div className="w-full overflow-hidden brightness-125 aspect-square">
