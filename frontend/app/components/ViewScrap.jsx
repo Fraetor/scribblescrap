@@ -8,6 +8,8 @@ export default function ViewScrap({ scrapID }) {
     const [scrapObject, setScrapObject] = useState(null)
 
     useEffect(() => {
+        if (scrapID == null) return
+
         fetch(`/api/scribble/`+scrapID.trimEnd()+"/info", {
             method: 'GET',
         })

@@ -11,7 +11,7 @@ import ScrapPage from "./components/ScrapPage";
 
 
 export default function Home() {
-  const [scrapID, setScrapID] = useState("cb93a105-ca2e-4d09-a1c8-c7243907eb62")
+  const [scrapID, setScrapID] = useState(null)
   const inputFile = useRef(null)
   const [username, setUsername] = useState('');
 
