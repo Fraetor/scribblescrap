@@ -80,7 +80,7 @@ def create_scribble():
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
     print(response.text)
     scribble_info = response.json()
-    scribble_info["image"] = flask.url_for(f"/api/scribble/{scribble_id}/image")
+    scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
     scribble_info["eye_image"] = "/public/eye.png"
     scribble_info["leg_image"] = "/public/leg.png"
