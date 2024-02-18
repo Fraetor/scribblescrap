@@ -76,6 +76,8 @@ def join_battle_no_scribble(battle_id):
 def battle_status(battle_id):
     players = db.lrange(f"{battle_id}:users", 0, -1)
 
+    print("players=", players)
+
     if len(players) == 0:
         return {
             "battle_id": battle_id,
@@ -83,8 +85,11 @@ def battle_status(battle_id):
             "player2": None
         }
 
+    print("more than 0")
+
     user_id_1 = players[0].decode("UTF-8")
     if len(players) == 2:
+        print("2 players")
         user_id_2 = players[1].decode("UTF-8")
         user_2 = {
             "user_id": user_id_2,
@@ -92,6 +97,10 @@ def battle_status(battle_id):
         }
     else:
         user_2 = None
+
+    print("user_id_1=", user_id_1, "; user_2=", user_2)
+    print("battle_id=", battle_id)
+    print("key=", f"{battle_id}:{user_id_1}:scribble")
 
     battle_status = {
         "battle_id": battle_id,
@@ -101,6 +110,9 @@ def battle_status(battle_id):
         },
         "player2": user_2,
     }
+
+    print("returning battle_status=", battle_status)
+
     return battle_status
 
 
