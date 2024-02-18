@@ -95,7 +95,7 @@ def create_scribble():
 
 
 @app.get("/api/scribbles")
-def list_scribbles(user_id):
+def list_scribbles():
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
