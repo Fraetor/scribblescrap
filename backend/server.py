@@ -121,7 +121,8 @@ def scribble_image(scribble_id):
         flask.abort(401)
     user_id = flask.session["user_id"]
     image = db.get(f"{user_id}:{scribble_id}:image")
-    resp = flask.make_response(image, mimetype="image/png")
+    resp = flask.make_response(image)
+    resp.headers["Content-type"] = "image/png"
     return resp
 
 
