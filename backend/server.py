@@ -46,7 +46,7 @@ def login():
     return resp
 
 
-@app.post("/api/logout")
+@app.route("/api/logout")
 def logout():
     # Remove the username from the session if it's there
     resp = flask.make_response(flask.redirect(flask.url_for("index")))
