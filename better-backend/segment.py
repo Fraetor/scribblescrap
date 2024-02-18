@@ -51,9 +51,9 @@ def get_uuid(id):
 def calculate_stats(id):
     data = do_ai_stuff(os.path.join(output_dir, str(id) + ".png"))
 
-    types = [data["top"].lower()]
+    types = [{"name": data["top"].lower(), "colour": "#000"}]
     if "next" in data and data["next"] != None:
-        types.append(data["next"].lower())
+        types.append({"name": data["next"].lower(), "colour": "#000000"})
 
     stats = choose_stats(data["stat_ranking"])
 
