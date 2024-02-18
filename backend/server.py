@@ -80,7 +80,7 @@ def create_scribble():
         print(response.text)
         flask.abort(502)
     image = response.content
-    db.rpush(f"{user_id}:scribbles", scribble_id)
+    db.lpush(f"{user_id}:scribbles", scribble_id)
     db.set(f"{user_id}:{scribble_id}:image", image)
     # Keep hold of processing_id for generating the stats.
     db.set(f"{user_id}:{scribble_id}:processing_id", processing_id)
