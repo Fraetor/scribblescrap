@@ -52,7 +52,7 @@ def calculate_stats(id):
     data = do_ai_stuff(os.path.join(output_dir, str(id) + ".png"))
 
     types = [data["top"].lower()]
-    if "next" in data:
+    if "next" in data and data["next"] != None:
         types.append(data["next"].lower())
 
     stats = choose_stats(data["stat_ranking"])
