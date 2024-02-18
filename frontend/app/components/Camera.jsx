@@ -12,8 +12,8 @@ export default function Camera({ setJson }) {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const maxWidth = 800; // Set your maximum width here
-                const maxHeight = 800; // Set your maximum height here
+                const maxWidth = 50; // Set your maximum width here
+                const maxHeight = 50; // Set your maximum height here
                 let width = img.width;
                 let height = img.height;
                 
