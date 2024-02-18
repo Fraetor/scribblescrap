@@ -39,7 +39,6 @@ def segment_path():
     return id, 200
 
 @app.route("/limbs/<uuid:id>")
-@app.route("/limbs/<uuid:id>.png")
 def get_limbs(id):
     return _get_limbs(id)
 
