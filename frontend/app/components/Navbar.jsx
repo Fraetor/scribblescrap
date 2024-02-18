@@ -6,8 +6,7 @@ export default function Navbar({ children }) {
     return (
         <div className="w-full h-fit py-4 h-16 bg-green-700 flex justify-between content-center">
             <Link href="/">
-                <Link href="/">
-                    <span
+                    <div
                         className="text-4xl flex font-bold italic ml-4 self-center items-center gap-4 text-yellow-500"
                     >
 
@@ -18,16 +17,15 @@ export default function Navbar({ children }) {
                             className="h-fit"
                             alt=""
                         />
-                        <span className="self-center">
+                        <div className="self-center">
                             <div>Scribble</div>
                             <div>Scrap</div>
-                        </span>
+                        </div>
 
 
 
 
-                    </span>
-                </Link>
+                    </div>
             </Link>
             <span className="text-white self-center mr-6">
                 <Login />
