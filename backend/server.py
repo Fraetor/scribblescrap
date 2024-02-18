@@ -73,7 +73,7 @@ def create_scribble():
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
     scribble_id = str(uuid4())
-    db.rpush(f"{user_id}:scribbles")
+    db.rpush(f"{user_id}:scribbles", scribble_id)
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
@@ -84,7 +84,7 @@ def create_scribble():
         file=sys.stderr,
     )
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
-    print(response.text, file=sys.stderr)
+    # print(response.text, file=sys.stderr)
     scribble_info = response.json()
     scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
