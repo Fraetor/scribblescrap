@@ -37,6 +37,7 @@ export default function Home() {
       <div className="grid grid-cols-2">
         <button className={`p-4 rounded-bl-lg ${(mode == "box") ? "bg-orange-600" : "bg-orange-800"} text-white font-lg`} onClick={() => {setMode("cam")}}>New Scraps!</button>
         <button className={`p-4 rounded-br-lg ${(mode == "cam") ? "bg-orange-600" : "bg-orange-800"} text-white font-lg`} onClick={() => {setMode("box")}}>Scrap Book!</button>
+
       </div>
       <div className="w-full mb-4 flex justify-center gap-4">
         {(mode === "box") && (

@@ -3,10 +3,12 @@ import HeathBar from "./healthBar";
 import Canvas from "./Canvas";
 import { useState, useEffect } from "react";
 import ShareButton from "./ShareButton";
+import { useRouter } from "next/navigation";
 
 
 export default function ViewScrap({ scrapID }) {
     const [scrapObject, setScrapObject] = useState(null)
+    const router = useRouter()
 
     useEffect(() => {
         if (scrapID == null) return
@@ -133,7 +135,29 @@ export default function ViewScrap({ scrapID }) {
                 </div>
                 </div>
             )}
+            <div className="flex flex-row gap-2 p-2 mb-8">
+
             <ShareButton url={"scribble?id="+scrapID} text={"Look at my scrap "+scrapObject.nickname} title={"Look at my scrap "+scrapObject.nickname}/>
+
+            <button className="p-4 rounded-full bg-orange-600 text-white font-lg" onClick={async () => {
+                await fetch("/api/new_battle", {method: "GET"})
+                    .then(resp => resp.text())
+                    .then(gameID => {
+                        console.log("made battle:", gameID)
+
+                        fetch(`/api/${gameID}/join/${scrapID}`, {
+                            method: "GET",
+                        })
+                            .then(resp => resp.text())
+                            .then(uid => {
+                                console.log("joined game with uid", uid)
+                                router.push(`/battle?id=${gameID}`)
+                            })
+                    })
+                    .catch(console.error)
+            }}>Battle with me!️</button>
+            </div>
+
             <div className="relative aspect-square">
                 <div className="absolute translate-y-[70%]">
                     <div className="w-full overflow-hidden brightness-125 aspect-square">

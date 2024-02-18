@@ -36,7 +36,9 @@ def create_new_battle():
     if "user_id" not in flask.session:
         flask.abort(401)
     battle_id = str(uuid4())
-    db.set(f"{battle_id}:qr", make_qr_code(battle_id))
+    db.set(
+        f"{battle_id}:qr",
+        make_qr_code(f"https://scribble-scraps.frost.cx/api/{battle_id}/join"))
     return battle_id
 
 
@@ -55,6 +57,21 @@ def join_battle(battle_id, scribble_id):
     db.set(f"{battle_id}:{user_id}:scribble", scribble_id)
     return user_id
 
+@app.route("/api/<battle_id>/join")
+def join_battle_no_scribble(battle_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    db.lpush(f"{battle_id}:users", user_id)
+
+    scribble_ids = [
+        id.decode("UTF-8") for id in db.lrange(f"{user_id}:scribbles", 0, -1)
+    ]
+
+    db.set(f"{battle_id}:{user_id}:scribble", scribble_ids[0])
+
+    return flask.redirect("/battle?id=" + battle_id)
+
 @app.get("/api/<battle_id>/status")
 def battle_status(battle_id):
     players = db.lrange(f"{battle_id}:users", 0, -1)
@@ -63,12 +80,10 @@ def battle_status(battle_id):
         user_id_2 = players[1].decode("UTF-8")
         user_2 = {
             "user_id": user_id_2,
-            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble"),
+            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble").decode("utf-8"),
         }
     else:
         user_2 = None
-
-    print("ids:", user_id_1, user_id_2)
 
     battle_status = {
         "battle_id": battle_id,
