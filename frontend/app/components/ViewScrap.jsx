@@ -157,9 +157,13 @@ export default function ViewScrap({ scrapID }) {
                         {(scrapObject.types[0].name === "tech") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/antennae.gif"}} />)}
                         {(scrapObject.types[0].name === "food") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/fork.png"}} />)}
                         {(scrapObject.types[0].name === "unreal") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/horn.png"}} />)}
-                        {(scrapObject.types[0].name !== "unreal" && scrapObject.types[0].name !== "food" && scrapObject.types[0].name !== "arcane" && scrapObject.types[0].name !== "tech") && (<Canvas width={512} height={512} conf={draw_conf} />)}
-                        </div>
-                    )}
+                        {(scrapObject.types[0].name === "plastic") && (<Canvas width={512} height={512} conf={{...draw_conf, accent:"/plastic.png"}} />)}
+                        {(scrapObject.types[0].name === "plant") && (<Canvas width={512} height={512} conf={{...draw_conf, accent:"/flower.png"}} />)}
+                        {(scrapObject.types[0].name === "poison") && (<Canvas width={512} height={512} conf={{...draw_conf, accent:"/skull.png"}} />)}
+                        {(scrapObject.types[0].name === "fabric") && (<Canvas width={512} height={512} conf={{...draw_conf, accent:"/fabric.png"}} />)}
+                        {(scrapObject.types[0].name === "scissors") && (<Canvas width={512} height={512} conf={{...draw_conf, accent:"/glint.png"}} />)}
+                        {(scrapObject.types[0].name !== "unreal" && scrapObject.types[0].name !== "fabric" && scrapObject.types[0].name !== "scissors" && scrapObject.types[0].name !== "plant" && scrapObject.types[0].name !== "poison" && scrapObject.types[0].name !== "plastic" && scrapObject.types[0].name !== "food" && scrapObject.types[0].name !== "arcane" && scrapObject.types[0].name !== "tech") && (<Canvas width={512} height={512} conf={draw_conf} />)}
+                        </div>                    )}
                     {(typeof(scrapObject.types) === "undefined") && (<Canvas width={512} height={512} conf={draw_conf} />)}
                     
                 </div>

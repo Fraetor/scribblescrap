@@ -29,6 +29,12 @@ const Canvas = function ({width, height, conf}) {
         deco_img.src = conf.deco
     }
 
+    let accent_img = new window.Image()
+
+    if (typeof(conf.accent) !== "undefined"){
+        accent_img.src = conf.accent
+    }
+
 
     let sway = 0
     let arm_sway = 0
@@ -94,6 +100,15 @@ const Canvas = function ({width, height, conf}) {
             )
         }
         
+        if (typeof(conf.accent) !== "undefined" ) {
+            drawImage(
+                ctx,
+                accent_img,
+                80,-180,
+                0,
+                accent_img.width/4,accent_img.height/4,
+            )
+        }
 
 
         for (var eye of conf.eyes) {
