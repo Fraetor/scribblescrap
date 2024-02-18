@@ -73,6 +73,7 @@ def create_scribble():
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
     scribble_id = str(uuid4())
+    db.rpush(f"{user_id}:scribbles")
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
@@ -98,7 +99,8 @@ def list_scribbles(user_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    db.get(f"{user_id}:scribbles")
+    scribble_ids = db.lrange(f"{user_id}:scribbles", 0, -1)
+    return scribble_ids
 
 
 @app.get("/api/scribble/<scribble_id>/image")
