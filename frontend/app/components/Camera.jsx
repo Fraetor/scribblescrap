@@ -8,14 +8,14 @@ export default function Camera() {
     const file = e.target.files[0];
     setImage(file);
     // Automatically submit the form when a file is selected
-    submitForm();
+    submitForm(file);
   };
 
-  const submitForm = () => {
+  const submitForm = (file) => {
     console.log("Yep, did the thing")
-    if (image) {
+    if (file) {
       const formData = new FormData();
-      formData.append('image', image);
+      formData.append('image', file);
 
       fetch('/api/create_scribble', {
         method: 'POST',
