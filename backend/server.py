@@ -76,7 +76,9 @@ def create_scribble():
     os.unlink(image_path)
 
     # Get scribble's stats
+    print("Getting:", IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+    print(response.text)
     scribble_info = response.json()
     scribble_info["image"] = flask.url_for(f"/api/scribble/{scribble_id}/image")
     scribble_info["arm_image"] = "/public/arm.png"
