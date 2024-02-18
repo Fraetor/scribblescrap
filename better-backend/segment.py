@@ -69,12 +69,12 @@ def calculate_stats(id):
             {
                 "direction": -0.1,
                 "limb_anchor": [10, 10],
-                "body_anchor": list(surrounds[0]),
+                "body_anchor": list(surrounds[8]),
             },
             {
                 "direction": 3.241,
                 "limb_anchor": [10, 10],
-                "body_anchor": list(surrounds[8]),
+                "body_anchor": list(surrounds[0]),
             },
         ],
         "legs": [
