@@ -20,6 +20,8 @@ export default function Login() {
         console.log(cookie)
         if (cookie) {
             setUsername(cookie);
+            router.push("/")
+            router.refresh()
         }
     }, [cookie]);
 

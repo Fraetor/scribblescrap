@@ -11,6 +11,7 @@ import ScrapPage from "./components/ScrapPage";
 
 
 export default function Home() {
+  const [mode, setMode] = useState("box")
   const [scrapID, setScrapID] = useState(null)
   const inputFile = useRef(null)
   const [username, setUsername] = useState('');
@@ -32,10 +33,27 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12">
-      <Camera setJson={setScrapID} />
-      <div className="w-full flex justify-center gap-4">
-        <ViewScrap scrapID={scrapID} />
+    <main className="flex min-h-screen flex-col items-center pt-0 p-12">
+      <div className="grid grid-cols-2">
+        <button className={`p-4 rounded-bl-lg ${(mode == "box") ? "bg-orange-600" : "bg-orange-800"} text-white font-lg`} onClick={() => {setMode("cam")}}>New Scraps!</button>
+        <button className={`p-4 rounded-br-lg ${(mode == "cam") ? "bg-orange-600" : "bg-orange-800"} text-white font-lg`} onClick={() => {setMode("box")}}>Scrap Book!</button>
+      </div>
+      <div className="w-full mb-4 flex justify-center gap-4">
+        {(mode === "box") && (
+          <ScrapPage/>
+        )}
+        {(mode === "cam") && (
+          <div className="">
+            <span>Hello</span>
+            <Camera setJson={setScrapID} />
+            <ViewScrap scrapID={scrapID} />
+          </div>
+        )}
+        
+        
+        
+        
+
         {/* <div className="w-2/3">
           <BattleScrap
             scrap={scrapID}
@@ -47,9 +65,6 @@ export default function Home() {
             scrap={testRScrap}
           />
         </div> */}
-        <ScrapPage/>
-
-
       </div>
 
 

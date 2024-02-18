@@ -86,20 +86,21 @@ export default function Camera({ setJson }) {
     };
 
     return (
-        <form method="post" encType="multipart/form-data">
-            <div>
-                <label htmlFor="file">Take Picture</label>
-                <input
-                    type="file"
-                    accept="image/jpeg"
-                    id="file"
-                    capture="camera"
-                    ref={inputFile}
-                    style={{ display: 'none' }}
-                    onChange={handleFileChange}
-                />
-            </div>
-            <button className="bg-slate-500 p-4 text-black" type="button" onClick={onButtonClick}>Take Picture</button>
-        </form>
+        <div className="w-full h-fit flex">
+            <button className="bg-orange-600 p-4 text-white rounded-full" type="button" onClick={onButtonClick}>Take Picture</button>
+            <form method="post" encType="multipart/form-data">
+                <div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        id="file"
+                        capture="camera"
+                        ref={inputFile}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                    />
+                </div>
+            </form>
+        </div>
     );
 }
