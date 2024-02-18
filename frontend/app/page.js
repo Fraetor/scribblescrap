@@ -7,6 +7,7 @@ import BattleScrap from "./components/BattleScraps";
 import ViewScrap from "./components/ViewScrap";
 import { useGetCookie } from "./components/getCookie";
 import { useEffect } from "react";
+import ScrapPage from "./components/ScrapPage";
 
 
 export default function Home() {
@@ -32,6 +33,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
+      <Camera setJson={setScrapID} />
       <div className="w-full flex justify-center gap-4">
         {/* <div className="w-2/3">
           <BattleScrap
@@ -43,15 +45,11 @@ export default function Home() {
             scrap={testRScrap}
           />
         </div> */}
-        {(scrapID !== null) && (
-          <div>
-            <ViewScrap scrapID={scrapID}></ViewScrap>
-          </div>
-        )}
+        <ScrapPage/>
 
 
       </div>
-      {/* <Camera setJson={setScrapID} /> */}
+      
 
     </main>
   );
