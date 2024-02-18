@@ -23,6 +23,13 @@ const Canvas = function ({width, height, conf}) {
     let leg_img = new window.Image()
     leg_img.src = conf.leg_img_url
 
+    let deco_img = new window.Image()
+
+    if (typeof(conf.deco) !== "undefined"){
+        deco_img.src = conf.deco
+    }
+
+
     let sway = 0
     let arm_sway = 0
     let leg_sway = 0
@@ -69,12 +76,24 @@ const Canvas = function ({width, height, conf}) {
                 leg.rx, leg.ry)
         }
 
+
         drawImage(
             ctx,
             scrap_img,
             0, 0,
             0,
             512, 512)
+
+        if (typeof(conf.deco) !== "undefined" ) {
+            drawImage(
+                ctx,
+                deco_img,
+                0,-280,
+                0,
+                deco_img.width,deco_img.height,
+            )
+        }
+        
 
 
         for (var eye of conf.eyes) {
