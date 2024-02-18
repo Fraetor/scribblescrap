@@ -67,7 +67,7 @@ def create_scribble():
     print("Temp image saved to", image_path)
     # Request to cropping server.
     processing_id = requests.get(
-        IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
+        IMAGE_CROPPER_URL + f"/segment?path={urllib.parse.quote_plus(image_path)}"
     ).text
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
