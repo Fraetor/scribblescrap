@@ -112,9 +112,8 @@ def scribble_image(scribble_id):
         flask.abort(401)
     user_id = flask.session["user_id"]
     image = db.get(f"{user_id}:{scribble_id}:image")
-    resp = flask.make_response(image)
-    resp.headers["Content-Type"] = "image/png"
-    return image
+    resp = flask.make_response(image, mimetype="image/png")
+    return resp
 
 
 @app.get("/api/scribble/<scribble_id>/info")
