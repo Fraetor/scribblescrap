@@ -58,14 +58,7 @@ export default function Camera({ setJson }) {
                 body: formData
             })
                 .then(response => response.text())
-                .then(data => {
-                    fetch(`/api/scribble/`+data+"/info", {
-                        method: 'GET',
-                    })
-                    .then(response => response.json())
-                    .then(data => setJson(data))
-                    .catch()
-                })
+                .then(data => {setJson(data)})
                 .catch(error => {
                     // Handle error
                     console.error('Error:', error);

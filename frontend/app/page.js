@@ -5,42 +5,29 @@ import Camera from "./components/Camera";
 import { useRef, useState } from "react";
 import BattleScrap from "./components/BattleScraps";
 import ViewScrap from "./components/ViewScrap";
+import { useGetCookie } from "./components/getCookie";
+import { useEffect } from "react";
 
 
 export default function Home() {
-  const [scrap, setScrap] = useState(null)
+  const [scrapID, setScrapID] = useState("cb93a105-ca2e-4d09-a1c8-c7243907eb62")
   const inputFile = useRef(null)
-  const testScrap = {
-    image: "/border_orange.png",
-    currentHealth: 10,
-    maxHealth: 20,
-    name: "Orange",
-    types: [
-      { name: "plant", colour: "#9ACD32" },
-      { name: "food", colour: "#FFFF99" },
-    ],
-    stats: {
-      might: 1,
-      speed: 2,
-      health: 4,
-      defence: 3
-  },
-  }
+  const [username, setUsername] = useState('');
 
-  const testRScrap = {
-    image: "/rock.png",
-    currentHealth: 18,
-    maxHealth: 20,
-    name: "Rock",
-    types: [
-      { name: "rock", colour: "#B8860B" },
-    ],
-    stats: {
-      might: 1,
-      speed: 2,
-      health: 4,
-      defence: 3
-  },
+  const cookie = useGetCookie('username');
+
+  useEffect(() => {
+    console.log(cookie)
+    if (cookie) {
+      setUsername(cookie);
+    }
+  }, [cookie]);
+
+  if (username === "") {
+    console.log(username)
+    return (
+      <div className="text-black w-full text-center text-4xl pt-4">Please Login</div>
+    )
   }
 
   return (
@@ -56,16 +43,16 @@ export default function Home() {
             scrap={testRScrap}
           />
         </div> */}
-      {(scrap !== null) && (
-        <div>
-          <ViewScrap scrap={scrap}></ViewScrap>
-        </div>
-      )}
-      
-      
+        {(scrapID !== null) && (
+          <div>
+            <ViewScrap scrapID={scrapID}></ViewScrap>
+          </div>
+        )}
+
+
       </div>
-      <Camera setJson={setScrap}/>
-      
+      {/* <Camera setJson={setScrapID} /> */}
+
     </main>
   );
 }

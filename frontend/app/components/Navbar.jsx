@@ -4,7 +4,7 @@ import Login from './Login'
 
 export default function Navbar({ children }) {
     return (
-        <div className="w-full h-16 bg-green-700 flex justify-between content-center">
+        <div className="w-full h-fit py-4 h-16 bg-green-700 flex justify-between content-center">
             <Link href="/">
                 <span
                     className="text-4xl flex font-bold italic ml-4 self-center text-yellow-500"
@@ -19,7 +19,8 @@ export default function Navbar({ children }) {
                         />
                     </span>
                 <span className="self-center">
-                    Scribble Scrap
+                    <div>Scribble</div>
+                    <div>Scrap</div>
                 </span>
 
 
