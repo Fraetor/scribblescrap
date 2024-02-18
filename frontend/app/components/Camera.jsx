@@ -7,7 +7,7 @@ export default function Camera({ setJson }) {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
-        
+
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
@@ -16,7 +16,7 @@ export default function Camera({ setJson }) {
                 const maxHeight = 720; // Set your maximum height here
                 let width = img.width;
                 let height = img.height;
-                
+
                 if (width > height) {
                     if (width > maxWidth) {
                         height *= maxWidth / width;
@@ -28,7 +28,7 @@ export default function Camera({ setJson }) {
                         height = maxHeight;
                     }
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
@@ -46,23 +46,38 @@ export default function Camera({ setJson }) {
         reader.readAsDataURL(file);
     };
 
-    const submitForm = (file) => {
+    const submitForm = async (file) => {
         console.log("Submitting")
         if (file) {
             console.log("Did the thing!")
             const formData = new FormData();
             formData.append('image', file);
 
-            fetch('/api/create_scribble', {
+            let id = undefined
+
+            await fetch('/api/create_scribble', {
                 method: 'POST',
                 body: formData
             })
                 .then(response => response.text())
-                .then(data => {setJson(data)})
+                .then(data => {
+                    console.log("got data:", data)
+                    setJson(data)
+                    id = data
+                })
                 .catch(error => {
                     // Handle error
                     console.error('Error:', error);
                 });
+
+            await fetch(`/api/scribble/${id}/generate`, {
+                method: "POST"
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("got data:", data)
+                    setJson(data)
+                })
         }
     };
 

@@ -12,7 +12,10 @@ export default function ViewScrap({ scrapID }) {
             method: 'GET',
         })
             .then(response => response.json())
-            .then(data => {setScrapObject(data)})
+            .then(data => {
+                console.log("got info data", data)
+                setScrapObject(data)
+            })
             .catch(error => {
                 // Handle error
                 console.error('Error:', error);
@@ -21,9 +24,9 @@ export default function ViewScrap({ scrapID }) {
 
 
 
-    if (scrapObject === null) {
+    if (scrapObject == null) {
         return (
-            <div className="text-black">LOADING</div>
+            <div className="text-black"></div>
         )
     }
 
