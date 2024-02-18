@@ -141,7 +141,7 @@ export default function ViewScrap({ scrapID }) {
                             src="/shadow.gif"
                             width={512}
                             height={512}
-                            className="scale-150 opacity-65"
+                            className="scale-150 opacity-65 rounded-full overflow-hidden"
                             alt=""
                         />
                         <div className="bg-slate-200">
