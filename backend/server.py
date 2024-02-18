@@ -100,7 +100,9 @@ def list_scribbles():
         flask.abort(401)
     user_id = flask.session["user_id"]
     scribble_ids = db.lrange(f"{user_id}:scribbles", 0, -1)
-    return scribble_ids
+    print(scribble_ids)
+    resp = flask.jsonify(scribble_ids)
+    return resp
 
 
 @app.get("/api/scribble/<scribble_id>/image")
