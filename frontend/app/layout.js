@@ -23,10 +23,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={openSans.className}>
-        <div className="bg-yellow-100 h-full">
+        <div className="bg-[url('/notebook_bg_wd.png')] h-full">
           <Navbar/>
           <div className="flex justify-center">
-            <div className="max-w-screen-lg w-full">
+            <div className="max-w-2xl w-full">
               {children}
             </div>
           </div>

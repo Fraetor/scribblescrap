@@ -11,6 +11,15 @@ export default function Login () {
     const [username, setUsername] = useState('');
     const [typing, setTyping] = useState('');
 
+    const cookie = useGetCookie('username');
+
+    useEffect(() => {
+        console.log(cookie)
+        if (cookie) {
+            setUsername(cookie);
+        }
+    }, [cookie]);
+
     const openModal = () => {
       setIsOpen(true);
     };

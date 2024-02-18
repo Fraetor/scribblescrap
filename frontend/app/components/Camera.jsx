@@ -1,58 +1,57 @@
-const camera = function () {
-    let width = 0;
-    let height = 0;
-    
-    const createObjects = function () {
-    
-    
-        const video = document.createElement('video');
-        video.id = 'video';
-        video.width = width;
-        video.width = height;
-        video.autoplay = true;
-        document.body.appendChild(video);
-    
-        const canvas = document.createElement('canvas');
-        canvas.id = 'canvas';
-        canvas.width = width;
-        canvas.width = height;
-        document.body.appendChild(canvas);
+import React, { useState, useRef } from 'react';
+
+export default function Camera() {
+  const [image, setImage] = useState(null);
+  const inputFile = useRef(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    // Automatically submit the form when a file is selected
+    submitForm();
+  };
+
+  const submitForm = () => {
+    console.log("Yep, did the thing")
+    if (image) {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      fetch('/api/create_scribble', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle response if needed
+        console.log(data);
+      })
+      .catch(error => {
+        // Handle error
+        console.error('Error:', error);
+      });
     }
-    
-    
-    return {
-        video: null,
-        context: null,
-        canvas: null,
-    
-        startCamera: function (w = 680, h = 480) {
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                width = w;
-                height = h;
-    
-                createObjects();
-    
-                this.video = document.getElementById('video');
-                this.canvas = document.getElementById('canvas');
-                this.context = this.canvas.getContext('2d');
-    
-    
-                (function (video) {
-                    navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
-                        video.srcObject = stream;
-                        video.play();
-                    });
-                })(this.video)
-    
-            }
-        },
-    
-    
-        takeSnapshot: function () {
-            this.context.drawImage(this.video, 0, 0, width, height);
-        }
-    
-    }
-    }();
-    
-    export default camera;
+  };
+
+  const onButtonClick = () => {
+    inputFile.current.click();
+  };
+
+  return (
+    <form method="post" encType="multipart/form-data">
+      <div>
+        <label htmlFor="file">Take Picture</label>
+        <input
+          type="file"
+          accept="image/jpeg"
+          id="file"
+          capture="camera"
+          ref={inputFile}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+      </div>
+      <button className="bg-slate-500 p-4 text-black" type="button" onClick={onButtonClick}>Take Picture</button>
+    </form>
+  );
+}
