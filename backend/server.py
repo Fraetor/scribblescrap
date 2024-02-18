@@ -12,7 +12,6 @@ import flask
 import redis
 import requests
 
-
 # Constants:
 
 IMAGE_CROPPER_URL = "http://localhost:7001"
@@ -67,42 +66,24 @@ def create_scribble():
     db.set(f"{user_id}:raw_mon", image_path)
     print("Temp image saved to", image_path)
     # Request to cropping server.
-    # TODO: Enable the actual server.
-    with open(image_path, "rb") as fp:
-        image = fp.read()
-    # processing_id = requests.get(
-    #     IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
-    # )
-    # response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id.text}")
-    # image = response.content
+    processing_id = requests.get(
+        IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
+    ).text
+    response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
+    image = response.content
     scribble_id = str(uuid4())
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
     # Get scribble's stats
-    # TODO: AI calls.
-
-    # TODO: This needs the AI returns put into it.
-    scribble_info = {
-        "image": flask.url_for(f"/api/scribble/{scribble_id}/image"),
-        "arm_image": "/public/arm.png",
-        "eye_image": "/public/eye.png",
-        "leg_image": "/public/leg.png",
-        "health": {"max": 25},
-        "limbs": [
-            {"direction": "2", "arm_anchor": [10, 15], "body_anchor": [25, 20]},
-            {"direction": "4.3", "arm_anchor": [10, 15], "body_anchor": [25, 20]},
-        ],
-        "name": "Testimon",
-        "description": "A test scraplet.",
-        "stats": {"might": 1, "speed": 1, "health": 1, "defence": 1},
-        "types": [
-            {"name": "grass", "colour": "#00ff00"},
-            {"name": "brick", "colour": "#ff0c00"},
-        ],
-    }
+    response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+    scribble_info = response.json()
+    scribble_info["image"] = flask.url_for(f"/api/scribble/{scribble_id}/image")
+    scribble_info["arm_image"] = "/public/arm.png"
+    scribble_info["eye_image"] = "/public/eye.png"
+    scribble_info["leg_image"] = "/public/leg.png"
     db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
-    return scribble_info
+    return scribble_id
 
 
 @app.get("/api/scribbles")
