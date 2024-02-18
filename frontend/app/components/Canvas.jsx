@@ -78,7 +78,7 @@ const Canvas = function ({width, height, conf}) {
 
         for (var eye of conf.eyes) {
             ctx.save()
-            ctx.rotate(sway * 0.01 * eye.x)
+            ctx.rotate(sway * 0.005 * eye.x)
 
             drawImage(
                 ctx,
