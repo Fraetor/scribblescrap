@@ -44,27 +44,10 @@ export default function Home() {
         )}
         {(mode === "cam") && (
           <div className="">
-            <span>Hello</span>
             <Camera setJson={setScrapID} />
             <ViewScrap scrapID={scrapID} />
           </div>
         )}
-        
-        
-        
-        
-
-        {/* <div className="w-2/3">
-          <BattleScrap
-            scrap={scrapID}
-          />
-        </div> */}
-        {/*
-        <div className="w-1/3">
-          <BattleScrap
-            scrap={testRScrap}
-          />
-        </div> */}
       </div>
 
 

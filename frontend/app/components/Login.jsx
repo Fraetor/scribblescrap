@@ -12,7 +12,7 @@ export default function Login() {
     const [isOpen, setIsOpen] = useState(false);
     const [username, setUsername] = useState('');
     const [typing, setTyping] = useState('');
-    
+
 
     const cookie = useGetCookie('username');
 
@@ -20,7 +20,6 @@ export default function Login() {
         console.log(cookie)
         if (cookie) {
             setUsername(cookie);
-            router.push("/")
             router.refresh()
         }
     }, [cookie]);
