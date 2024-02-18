@@ -126,7 +126,7 @@ export default function ViewScrap({ scrapID }) {
                 </div>
                 </div>
             )}
-            <div className="relative">
+            <div className="relative aspect-square">
                 <div className="absolute translate-y-[70%]">
                     <div className="w-full overflow-hidden brightness-125 aspect-square">
                         <Image
