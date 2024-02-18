@@ -121,7 +121,17 @@ export default function BattleScrap({ scrapID }) {
                     </div>
                 </div>
                 <div className="absolute flex justify-center mt-4 w-full -translate-y-[10%]">
-                    <Canvas width={512} height={512} conf={draw_conf} />
+                    {(typeof(scrapObject.types) !== "undefined") && (
+                        <div>
+                        {(scrapObject.types[0].name === "arcane") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/wizard_hat.png"}} />)}
+                        {(scrapObject.types[0].name === "tech") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/antennae.gif"}} />)}
+                        {(scrapObject.types[0].name === "food") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/fork.png"}} />)}
+                        {(scrapObject.types[0].name === "unreal") && (<Canvas width={512} height={512} conf={{...draw_conf, deco:"/horn.png"}} />)}
+                        {(scrapObject.types[0].name !== "unreal" && scrapObject.types[0].name !== "food" && scrapObject.types[0].name !== "arcane" && scrapObject.types[0].name !== "tech") && (<Canvas width={512} height={512} conf={draw_conf} />)}
+                        </div>
+                    )}
+                    {(typeof(scrapObject.types) === "undefined") && (<Canvas width={512} height={512} conf={draw_conf} />)}
+
                 </div>
             </div>
         </div>

@@ -75,6 +75,14 @@ def join_battle_no_scribble(battle_id):
 @app.get("/api/<battle_id>/status")
 def battle_status(battle_id):
     players = db.lrange(f"{battle_id}:users", 0, -1)
+
+    if len(players) == 0:
+        return {
+            "battle_id": battle_id,
+            "player1": None,
+            "player2": None
+        }
+
     user_id_1 = players[0].decode("UTF-8")
     if len(players) == 2:
         user_id_2 = players[1].decode("UTF-8")
