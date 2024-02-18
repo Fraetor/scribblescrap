@@ -59,21 +59,25 @@ def join_battle(battle_id, scribble_id):
 
 @app.get("/api/<battle_id>/status")
 def battle_status(battle_id):
-    {
-        "battle_id": "..",
+    players = db.lrange(f"{battle_id}:users", 0, -1)
+    user_id_1 = players[0].decode("UTF-8")
+    user_id_2 = players[1].decode("UTF-8")
+
+    battle_status = {
+        "battle_id": battle_id,
         "player1": {
-            "id": "..",
-            "scribble_id": "...",
+            "user_id": user_id_1,
+            "scribble_id": db.get(f"{battle_id}:{user_id_1}:scribble"),
         },
         "player2": {
-            "id": "..",
-            "scribble_id": "...",
+            "user_id": user_id_2,
+            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble"),
         },
     }
-    pass
+    return battle_status
 
 
-@app.get("/api")
+@app.get("/")
 def index():
     if "username" in flask.session:
         return f'Logged in as {flask.session["username"]}'
