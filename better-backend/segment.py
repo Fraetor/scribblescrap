@@ -57,7 +57,8 @@ def calculate_stats(id):
 
     stats = choose_stats(data["stat_ranking"])
 
-    print(data)
+    img = Image.open(os.path.join(output_dir, str(id) + ".png"))
+    surrounds = [ raycast_inwards(img, math.pi * 2.0 * i / 16.0) for i in range(16) ]
 
     return {
         "name": data["object"].title(),
@@ -68,24 +69,24 @@ def calculate_stats(id):
             {
                 "direction": -0.1,
                 "limb_anchor": [10, 10],
-                "body_anchor": [154, -15],
+                "body_anchor": list(surrounds[0]),
             },
             {
                 "direction": 3.241,
                 "limb_anchor": [10, 10],
-                "body_anchor": [-154, -15],
+                "body_anchor": list(surrounds[8]),
             },
         ],
         "legs": [
             {
                 "direction": 1.471,
                 "limb_anchor": [10, 30],
-                "body_anchor": [70, 130],
+                "body_anchor": list(surrounds[10]),
             },
             {
                 "direction": 1.671,
                 "limb_anchor": [10, 30],
-                "body_anchor": [-70, 120],
+                "body_anchor": list(surrounds[13]),
             },
         ],
         "arm_image": "arm.png",
@@ -93,5 +94,6 @@ def calculate_stats(id):
         "health": {
             "max": stats["health"] * 4,
         },
-        "stats": stats
+        "stats": stats,
+        "surrounds": surrounds
     }

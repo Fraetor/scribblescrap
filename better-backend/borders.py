@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw
+import math
 
 def remove_feathering(img: Image.Image):
     new_img = Image.new("RGBA", img.size)
@@ -48,7 +49,8 @@ def postprocess(img: Image.Image):
     thresh = remove_feathering(img)
     borders = draw_border(thresh)
     bbox = borders.getbbox()
-    return scale_image(borders.crop(bbox))
+    scaled = scale_image(borders.crop(bbox))
+    return scaled
 
 def scale_image(img, target_size=(512, 512), background_color=(255, 255, 255, 0)):
     original_image = img
@@ -76,3 +78,25 @@ def scale_image(img, target_size=(512, 512), background_color=(255, 255, 255, 0)
     scaled_image.paste(original_image.resize(new_size, Image.Resampling.LANCZOS), paste_position)
 
     return scaled_image
+
+def raycast_inwards(img: Image.Image, in_angle, step_size=4):
+    length = math.sqrt(2 * math.pow(img.width / 2, 2))
+    dx, dy = math.cos(in_angle), math.sin(in_angle)
+    x, y = length * -dx + img.width/2, length * -dy + img.height/2
+    num_steps = int(length / step_size)
+
+    for i in range(num_steps):
+        ix, iy = int(x), int(y)
+        if ix < 0 or ix >= img.width or iy < 0 or iy >= img.height:
+            x += dx * step_size
+            y += dy * step_size
+            continue
+
+        alpha = img.getpixel((ix, iy))[3]
+        if alpha > 0:
+            break
+
+        x += dx * step_size
+        y += dy * step_size
+
+    return (x + dx * step_size, y + dy * step_size)

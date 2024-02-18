@@ -43,10 +43,11 @@ const Canvas = function ({width, height, conf}) {
         update()
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-        
+
         ctx.save()
         ctx.translate(width / 2, height / 2)
         ctx.rotate(sway)
+        ctx.scale(0.7, 0.7)
 
         for (var arm of conf.arms) {
             drawImage(
@@ -73,8 +74,8 @@ const Canvas = function ({width, height, conf}) {
             scrap_img,
             0, 0,
             0,
-            340, 340)
-        
+            512, 512)
+
 
         for (var eye of conf.eyes) {
             ctx.save()
