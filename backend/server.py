@@ -53,6 +53,9 @@ def join_battle(battle_id, scribble_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
+    if isinstance(user_id, bytes):
+        user_id = user_id.decode("utf-8")
+
     db.lpush(f"{battle_id}:users", user_id)
     db.set(f"{battle_id}:{user_id}:scribble", scribble_id)
     return user_id
@@ -61,7 +64,11 @@ def join_battle(battle_id, scribble_id):
 def join_battle_no_scribble(battle_id):
     if "user_id" not in flask.session:
         flask.abort(401)
+
     user_id = flask.session["user_id"]
+    if isinstance(user_id, bytes):
+        user_id = user_id.decode("utf-8")
+
     db.lpush(f"{battle_id}:users", user_id)
 
     scribble_ids = [
