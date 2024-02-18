@@ -60,6 +60,7 @@ def create_scribble():
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
+    scribble_id = str(uuid4())
 
     # Process image.
     image_path = tempfile.mktemp(".jpg")
@@ -79,7 +80,6 @@ def create_scribble():
         print(response, sys.stderr)
         flask.abort(502)
     image = response.content
-    scribble_id = str(uuid4())
     db.rpush(f"{user_id}:scribbles", scribble_id)
     db.set(f"{user_id}:{scribble_id}:image", image)
     # Keep hold of processing_id for generating the stats.
