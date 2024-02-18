@@ -8,7 +8,7 @@ export default function ViewScrap({ scrapID }) {
     const [scrapObject, setScrapObject] = useState(null)
 
     useEffect(() => {
-        fetch(`/api/scribble/`+scrapID+"/info", {
+        fetch(`/api/scribble/`+scrapID.trimEnd()+"/info", {
             method: 'GET',
         })
             .then(response => response.json())
@@ -20,7 +20,7 @@ export default function ViewScrap({ scrapID }) {
                 // Handle error
                 console.error('Error:', error);
             });
-    }, []);
+    }, [scrapID]);
 
 
 
@@ -79,28 +79,28 @@ export default function ViewScrap({ scrapID }) {
 
     return (
         <div className="w-full">
-            <div className="text-yellow-500 text-center text-4xl mb-2 mt-4">You've found a {scrapObject.name}!</div>
-            <div className="text-orange-500 text-center text-4xl mb-2 italic font-bold">{scrapObject.nickname}</div>
+            <div className="text-yellow-500 text-center text-4xl mb-2 mt-4">You've found a {scrapObject.name || "???"}!</div>
+            <div className="text-orange-500 text-center text-4xl mb-2 italic font-bold">{scrapObject.nickname || "???"}</div>
             <div className="grid grid-cols-4 gap-2" >
             <div className="text-md bg-red-800 p-2 rounded-full">
                 <div className="text-center text-lg">Might</div>
-                <div className="text-center text-2xl font-bold">{scrapObject.stats.might}</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats ? scrapObject.stats.might : "?"}</div>
             </div>
             <div className="text-md bg-yellow-500 p-2 rounded-full">
                 <div className="text-center text-lg">Speed</div>
-                <div className="text-center text-2xl font-bold">{scrapObject.stats.speed}</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats ? scrapObject.stats.speed : "?"}</div>
             </div>
             <div className="text-md bg-pink-600 p-2 rounded-full">
                 <div className="text-center text-lg">Health</div>
-                <div className="text-center text-2xl font-bold">{scrapObject.stats.health}</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats ? scrapObject.stats.health : "?"}</div>
             </div>
             <div className="text-md bg-blue-500 p-2 rounded-full">
                 <div className="text-center text-lg">Defence</div>
-                <div className="text-center text-2xl font-bold">{scrapObject.stats.defence}</div>
+                <div className="text-center text-2xl font-bold">{scrapObject.stats ? scrapObject.stats.defence : "?"}</div>
             </div>
             </div>
 
-            {(scrapObject.types.length === 1) && (
+            {(scrapObject.types && scrapObject.types.length === 1) && (
                 <div className="flex">
                 <span className="text-xl text-black px-2">Class:</span>
                 <div
@@ -111,7 +111,7 @@ export default function ViewScrap({ scrapID }) {
                 </div>
                 </div>
             )}
-            {(scrapObject.types.length === 2) && (
+            {(scrapObject.types && scrapObject.types.length === 2) && (
                 <div className="flex">
                 <span className="text-xl text-black px-2">Classes:</span>
                 <div className="flex text-center gap-1 pt-1">

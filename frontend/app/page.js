@@ -35,7 +35,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       <Camera setJson={setScrapID} />
       <div className="w-full flex justify-center gap-4">
-        {(scrapID && <ViewScrap scrapID={scrapID} />)}
+        <ViewScrap scrapID={scrapID} />
         {/* <div className="w-2/3">
           <BattleScrap
             scrap={scrapID}

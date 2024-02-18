@@ -76,7 +76,7 @@ export default function Camera({ setJson }) {
                 .then(response => response.json())
                 .then(data => {
                     console.log("got data:", data)
-                    setJson(data)
+                    setJson(id + " ")
                 })
         }
     };
