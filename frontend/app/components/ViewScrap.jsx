@@ -12,8 +12,8 @@ export default function ViewScrap({ scrap }) {
         arms.push({
             "rx": arm.limb_anchor[0],
             "ry": arm.limb_anchor[1],
-            "ox": arm.body_anchor[0],
-            "oy": arm.body_anchor[1],
+            "ox": arm.body_anchor[0] - 256,
+            "oy": arm.body_anchor[1] - 256,
             "rot": arm.direction
         })
     }
@@ -23,8 +23,8 @@ export default function ViewScrap({ scrap }) {
         legs.push({
             "rx": leg.limb_anchor[0],
             "ry": leg.limb_anchor[1],
-            "ox": leg.body_anchor[0],
-            "oy": leg.body_anchor[1],
+            "ox": leg.body_anchor[0] - 256,
+            "oy": leg.body_anchor[1] - 256,
             "rot": leg.direction
         })
     }
