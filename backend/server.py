@@ -59,7 +59,14 @@ def join_battle(battle_id, scribble_id):
 def battle_status(battle_id):
     players = db.lrange(f"{battle_id}:users", 0, -1)
     user_id_1 = players[0].decode("UTF-8")
-    user_id_2 = players[1].decode("UTF-8")
+    if len(players) == 2:
+        user_id_2 = players[1].decode("UTF-8")
+        user_2 = {
+            "user_id": user_id_2,
+            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble"),
+        }
+    else:
+        user_2 = None
 
     battle_status = {
         "battle_id": battle_id,
@@ -67,10 +74,7 @@ def battle_status(battle_id):
             "user_id": user_id_1,
             "scribble_id": db.get(f"{battle_id}:{user_id_1}:scribble"),
         },
-        "player2": {
-            "user_id": user_id_2,
-            "scribble_id": db.get(f"{battle_id}:{user_id_2}:scribble"),
-        },
+        "player2": user_2,
     }
     return battle_status
 
