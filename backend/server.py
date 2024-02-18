@@ -23,7 +23,7 @@ app.secret_key = b"*s\xd3\xea%\xc7\x99\x8e\xb1\x13V\rpG\xf3\x8c\xf6\xcb'J7f\xc3\
 
 def make_qr_code(text: str) -> bytes:
     response = requests.get(
-        f"https://qrcode.show/{urllib.parse.quote(text)}",
+        f"https://qrcode.show/{text}",
         headers={"Accept": "image/png"},
     )
     if not response.ok:
@@ -74,6 +74,9 @@ def join_battle_no_scribble(battle_id):
     scribble_ids = [
         id.decode("UTF-8") for id in db.lrange(f"{user_id}:scribbles", 0, -1)
     ]
+
+    if len(scribble_ids) == 0:
+        return flask.redirect("/")
 
     db.set(f"{battle_id}:{user_id}:scribble", scribble_ids[0])
 
