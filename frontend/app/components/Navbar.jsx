@@ -9,17 +9,19 @@ export default function Navbar({ children }) {
                 <span
                     className="text-4xl flex font-bold italic ml-4 self-center items-center gap-4 text-yellow-500"
                 >
-                    <Image
-                        src="/orange.png"
-                        width={64}
-                        height={64}
-                        className="h-fit"
-                        alt=""
-                    />
-                    <span className="self-center">
-                        <div>Scribble</div>
-                        <div>Scrap</div>
-                    </span>
+                    <Link href="/">
+                        <Image
+                            src="/orange.png"
+                            width={64}
+                            height={64}
+                            className="h-fit"
+                            alt=""
+                        />
+                        <span className="self-center">
+                            <div>Scribble</div>
+                            <div>Scrap</div>
+                        </span>
+                    </Link>
 
 
 
