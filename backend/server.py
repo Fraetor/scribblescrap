@@ -67,10 +67,17 @@ def create_scribble():
     db.set(f"{user_id}:raw_mon", image_path)
     print("Temp image saved to", image_path)
     # Request to cropping server.
-    processing_id = requests.get(
+    response = requests.get(
         IMAGE_CROPPER_URL + f"/segment?path={urllib.parse.quote_plus(image_path)}"
-    ).text
+    )
+    if not response.ok:
+        print(response, sys.stderr)
+        flask.abort(502)
+    processing_id = response.text
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
+    if not response.ok:
+        print(response, sys.stderr)
+        flask.abort(502)
     image = response.content
     scribble_id = str(uuid4())
     db.rpush(f"{user_id}:scribbles", scribble_id)
@@ -84,7 +91,9 @@ def create_scribble():
         file=sys.stderr,
     )
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
-    # print(response.text, file=sys.stderr)
+    if not response.ok:
+        print(response, sys.stderr)
+        flask.abort(502)
     scribble_info = response.json()
     scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
