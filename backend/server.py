@@ -46,7 +46,7 @@ def login():
     return resp
 
 
-@app.post("/api/logout")
+@app.route("/api/logout")
 def logout():
     # Remove the username from the session if it's there
     resp = flask.make_response(flask.redirect(flask.url_for("index")))
@@ -73,6 +73,7 @@ def create_scribble():
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
     scribble_id = str(uuid4())
+    db.rpush(f"{user_id}:scribbles", scribble_id)
     db.set(f"{user_id}:{scribble_id}:image", image)
     os.unlink(image_path)
 
@@ -83,7 +84,7 @@ def create_scribble():
         file=sys.stderr,
     )
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
-    print(response.text, file=sys.stderr)
+    # print(response.text, file=sys.stderr)
     scribble_info = response.json()
     scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
@@ -94,11 +95,15 @@ def create_scribble():
 
 
 @app.get("/api/scribbles")
-def list_scribbles(user_id):
+def list_scribbles():
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    db.get(f"{user_id}:scribbles")
+    scribble_ids = [
+        id.decode("UTF-8") for id in db.lrange(f"{user_id}:scribbles", 0, -1)
+    ]
+    print(scribble_ids)
+    return scribble_ids
 
 
 @app.get("/api/scribble/<scribble_id>/image")
