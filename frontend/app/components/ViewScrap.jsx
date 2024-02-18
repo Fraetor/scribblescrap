@@ -76,7 +76,8 @@ export default function ViewScrap({ scrapID }) {
 
     return (
         <div className="w-full">
-            <div className="text-yellow-500 text-center text-4xl mb-2">You've found a {scrapObject.name}!</div>
+            <div className="text-yellow-500 text-center text-4xl mb-2 mt-4">You've found a {scrapObject.name}!</div>
+            <div className="text-orange-500 text-center text-4xl mb-2 italic font-bold">{scrapObject.nickname}</div>
             <div className="grid grid-cols-4 gap-2" >
             <div className="text-md bg-red-800 p-2 rounded-full">
                 <div className="text-center text-lg">Might</div>
