@@ -99,10 +99,11 @@ def list_scribbles():
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    scribble_ids = db.lrange(f"{user_id}:scribbles", 0, -1)
+    scribble_ids = [
+        id.decode("UTF-8") for id in db.lrange(f"{user_id}:scribbles", 0, -1)
+    ]
     print(scribble_ids)
-    resp = flask.jsonify(scribble_ids)
-    return resp
+    return scribble_ids
 
 
 @app.get("/api/scribble/<scribble_id>/image")
