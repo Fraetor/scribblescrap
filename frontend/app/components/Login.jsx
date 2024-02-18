@@ -48,11 +48,8 @@ export default function Login () {
             throw new Error('Login failed');
           }
       
-          // Assuming the server responds with JSON data
-          const data = await response.json();
-      
           // Handle successful login response, e.g., update state or perform navigation
-          console.log('Login successful', data);
+          console.log('Login successful');
         } catch (error) {
           // Handle fetch errors, e.g., network errors
           console.error('Login error:', error.message);
