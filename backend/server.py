@@ -67,7 +67,7 @@ def create_scribble():
     print("Temp image saved to", image_path)
     # Request to cropping server.
     processing_id = requests.get(
-        IMAGE_CROPPER_URL + f"?path={urllib.parse.quote_plus(image_path)}"
+        IMAGE_CROPPER_URL + f"/segment?path={urllib.parse.quote_plus(image_path)}"
     ).text
     response = requests.get(IMAGE_CROPPER_URL + f"/get/{processing_id}")
     image = response.content
@@ -76,9 +76,10 @@ def create_scribble():
     os.unlink(image_path)
 
     # Get scribble's stats
+    print("Getting:", IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
     scribble_info = response.json()
-    scribble_info["image"] = flask.url_for(f"/api/scribble/{scribble_id}/image")
+    scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
     scribble_info["eye_image"] = "/public/eye.png"
     scribble_info["leg_image"] = "/public/leg.png"
@@ -100,6 +101,8 @@ def scribble_image(scribble_id):
         flask.abort(401)
     user_id = flask.session["user_id"]
     image = db.get(f"{user_id}:{scribble_id}:image")
+    resp = flask.make_response(image)
+    resp.headers["Content-Type"] = "image/png"
     return image
 
 
