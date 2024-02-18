@@ -82,24 +82,10 @@ def create_scribble():
     scribble_id = str(uuid4())
     db.rpush(f"{user_id}:scribbles", scribble_id)
     db.set(f"{user_id}:{scribble_id}:image", image)
+    # Keep hold of processing_id for generating the stats.
+    db.set(f"{user_id}:{scribble_id}:processing_id", processing_id)
     os.unlink(image_path)
 
-    # Get scribble's stats
-    print(
-        "Getting:",
-        IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}",
-        file=sys.stderr,
-    )
-    response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
-    if not response.ok:
-        print(response, sys.stderr)
-        flask.abort(502)
-    scribble_info = response.json()
-    scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
-    scribble_info["arm_image"] = "/public/arm.png"
-    scribble_info["eye_image"] = "/public/eye.png"
-    scribble_info["leg_image"] = "/public/leg.png"
-    db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
     return scribble_id
 
 
@@ -126,12 +112,47 @@ def scribble_image(scribble_id):
     return resp
 
 
+@app.get("/api/scribble/<scribble_id>/limbs")
+def scribble_limbs(scribble_id):
+    if "user_id" not in flask.session:
+        flask.abort(401)
+    user_id = flask.session["user_id"]
+    processing_id = db.get(f"{user_id}:{scribble_id}:processing_id")
+    response = requests.get(IMAGE_CROPPER_URL + f"/limbs/{processing_id}")
+    if not response.ok:
+        print(response, sys.stderr)
+        flask.abort(502)
+    limbs = response.json()
+    db.set(f"{user_id}:{scribble_id}:limbs", limbs)
+    return limbs
+
+
 @app.get("/api/scribble/<scribble_id>/info")
 def scribble_info(scribble_id):
     if "user_id" not in flask.session:
         flask.abort(401)
     user_id = flask.session["user_id"]
-    scribble_info = json.loads(db.get(f"{user_id}:{scribble_id}:info"))
+    raw_scribble_info = db.get(f"{user_id}:{scribble_id}:info")
+    if raw_scribble_info is None:
+        # Generate scribble info.
+        processing_id = db.get(f"{user_id}:{scribble_id}:processing_id")
+        print(
+            "Getting:",
+            IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}",
+            file=sys.stderr,
+        )
+        response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+        if not response.ok:
+            print(response, sys.stderr)
+            flask.abort(502)
+        scribble_info = response.json()
+        scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
+        scribble_info["arm_image"] = "/public/arm.png"
+        scribble_info["eye_image"] = "/public/eye.png"
+        scribble_info["leg_image"] = "/public/leg.png"
+        db.set(f"{user_id}:{scribble_id}:info", json.dumps(scribble_info))
+    else:
+        scribble_info = json.loads(raw_scribble_info)
     return scribble_info
 
 
