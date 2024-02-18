@@ -4,6 +4,7 @@
 
 import json
 import os
+import sys
 import tempfile
 import urllib.parse
 from uuid import uuid4
@@ -76,8 +77,13 @@ def create_scribble():
     os.unlink(image_path)
 
     # Get scribble's stats
-    print("Getting:", IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+    print(
+        "Getting:",
+        IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}",
+        file=sys.stderr,
+    )
     response = requests.get(IMAGE_CROPPER_URL + f"/calculate-stats/{processing_id}")
+    print(response.text, file=sys.stderr)
     scribble_info = response.json()
     scribble_info["image"] = f"/api/scribble/{scribble_id}/image"
     scribble_info["arm_image"] = "/public/arm.png"
